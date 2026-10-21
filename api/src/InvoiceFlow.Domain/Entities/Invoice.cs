@@ -20,6 +20,8 @@ namespace InvoiceFlow.Domain.Entities
     public DateTime CreatedAtUtc { get; set; }
     public DateTime? UpdatedAtUtc { get; set; }
 
+    public string CostCenter { get; set; } = string.Empty;
+
     public ICollection<InvoiceAuditEntry> AuditTrail { get; set; } = new List<InvoiceAuditEntry>();
     }
 }
