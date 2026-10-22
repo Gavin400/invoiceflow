@@ -18,17 +18,28 @@ public class InvoicesController(AppDbContext db) : ControllerBase
             i.Amount, i.Currency, i.IssueDate, i.DueDate,
             i.CostCenter, i.Status, i.CreatedAtUtc, i.UpdatedAtUtc);
 
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<InvoiceResponse>>> GetAll(CancellationToken ct)
-    {
-        var invoices = await db.Invoices
-            .AsNoTracking()
-            .OrderByDescending(i => i.CreatedAtUtc)
-            .Select(ToResponse)
-            .ToListAsync(ct);
 
-        return Ok(invoices);
+
+    [HttpGet]
+public async Task<ActionResult<IReadOnlyList<InvoiceResponse>>> GetAll(
+    [FromQuery] InvoiceStatus? status,
+    CancellationToken ct)
+{
+    var query = db.Invoices.AsNoTracking();
+
+    if (status is not null)
+    {
+        query = query.Where(i => i.Status == status);
     }
+
+    var invoices = await query
+        .OrderByDescending(i => i.CreatedAtUtc)
+        .Select(ToResponse)
+        .ToListAsync(ct);
+
+    return Ok(invoices);
+}
+
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<InvoiceResponse>> GetById(Guid id, CancellationToken ct)

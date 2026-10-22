@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;                                    
 using InvoiceFlow.Infrastructure;
 using Scalar.AspNetCore;
+using InvoiceFlow.Api.Errors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,10 @@ var connectionString = builder.Configuration.GetConnectionString("Default")
     ?? throw new InvalidOperationException("Connection string 'Default' not found.");
 
 builder.Services.AddInfrastructure(connectionString);
+
+
+builder.Services.AddExceptionHandler<UniqueConstraintExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddControllers()                                      
     .AddJsonOptions(options =>                                           
@@ -20,6 +25,10 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandler();
+app.UseStatusCodePages();
+
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
