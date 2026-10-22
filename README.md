@@ -15,6 +15,11 @@ trail of who changed what and when.
 - Domain model for suppliers, invoices and audit entries
 - EF Core configuration with SQL Server migrations
 - Duplicate invoice protection (unique supplier + invoice number)
+- REST API for suppliers and invoices (create, read, update, filter by status)
+- Request validation, including cross-field rules (due date after issue date)
+- Draft-only editing enforced on the server
+- Consistent ProblemDetails error responses, with race-condition-safe duplicate handling
+- Interactive API docs (Scalar) in development
 
 ## Run locally
 ```bash
